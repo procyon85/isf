@@ -1,9 +1,5 @@
 #Update version to work with python3
 
-I run hit on a venv on Python3
-
-I remove dnet==1.12 from requirements.txt, it's replace by pydnet.  Install it with sudo pip install pydnet
-
 
 
 # Industrial Security Exploitation Framework
@@ -215,7 +211,6 @@ Execute the module:
 ## Installation on Ubuntu 16.04
 
 	sudo apt-get install python-dev python-pip libncurses5-dev git
-	sudo pip install pydnet
 	git clone https://github.com/w3h/isf
 	cd isf
 	sudo pip install -r requirements.txt

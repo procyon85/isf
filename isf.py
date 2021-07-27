@@ -36,7 +36,7 @@ ISF_CONFIG = os.path.join(ISF_DIR, "isf.xml")
 
 def make_env_path():
     p = util.get_sitepackages_path()
-    f = open(os.path.join(p, "isf.pth"), "wb+")
+    f = open(os.path.join(p, "isf.pth"), "w")   # Replace wb+ by w
     info = ISF_DIR + "\n"
     info += ISF_DIR + "/lib/protocols" + "\n"
     info += ISF_DIR + "/lib/thirdparty" + "\n"

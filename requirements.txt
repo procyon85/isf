@@ -1,5 +1,4 @@
 gnureadline
 pycrypto 
 pypiwin32
-dnet==1.12
 
