@@ -8,14 +8,14 @@ Modules add additional commands and operate in their own context
 
 """
 import os
-from command     import FbCmd
-import exception
-import redirection
-import session
-import util
-import figlet
-import edfmeta
-from log import log
+from core.command     import FbCmd
+from core import exception
+from core import redirection
+from core import session
+from core import util
+from core import figlet
+from core import edfmeta
+from core.log import log
 __all__ = ['Fuzzbunch']
 
 GVAR_CHAR = '$'
@@ -329,7 +329,7 @@ class Fuzzbunch(FbCmd):
     def register_manager(self, type, typeConstructor):
         """Register a manager with Fuzzbunch.  Initially these are PluginManager objects"""
         if type in self.pluginmanagers:
-            raise exception.CmdErr, "'%s' already registered" % type
+            raise_(exception.CmdErr, "'%s' already registered" % type)
         self.pluginmanagers[type] = typeConstructor(type, self)
         return self.pluginmanagers[type]
 
@@ -337,7 +337,7 @@ class Fuzzbunch(FbCmd):
         try:
             del self.pluginmanagers[type]
         except KeyError:
-            raise exception.CmdErr, "'%s' not a registered manager type" % type
+            raise_(exception.CmdErr, "'%s' not a registered manager type" % type)
 
     def get_manager_types(self):
         return self.pluginmanagers.keys()
@@ -352,7 +352,7 @@ class Fuzzbunch(FbCmd):
         try:
             return self.pluginmanagers[type]
         except KeyError:
-            raise exception.CmdErr, "'%s' not a registered manager type" % type
+            raise_(exception.CmdErr, "'%s' not a registered manager type" % type)
 
     def get_manager_list(self):
         for manager in self.pluginmanagers.values():
@@ -484,10 +484,10 @@ class Fuzzbunch(FbCmd):
         else:
             manager = self.get_manager(argv[0])
             if manager is None:
-                raise exception.CmdErr, "No plugin type for %s" % argv[0]
+                raise_(exception.CmdErr, "No plugin type for %s" % argv[0])
 
             if manager.get_active_name() is "None":
-                raise exception.CmdErr, "No active plugin for %s" % argv[0]
+                raise_(exception.CmdErr, "No active plugin for %s" % argv[0])
             
             self.setcontext(manager)
             self.setprompt()
@@ -552,7 +552,7 @@ class Fuzzbunch(FbCmd):
                             self.runcmd_noex(auto)
                     break
             else:
-                raise exception.CmdErr, "Plugin %s not found!" % argv[0]
+                raise_(exception.CmdErr, "Plugin %s not found!" % argv[0])
 
     """
     CMD: Show
@@ -631,7 +631,7 @@ class Fuzzbunch(FbCmd):
             try:
                 index = int(argv[0])
             except ValueError: 
-                raise exception.CmdErr, "Invalid index"
+                raise exception.CmdErr("Invalid index")
 
             item = self.session.get_item(index)
             args = {'name'   : item.get_name(),
@@ -680,7 +680,7 @@ class Fuzzbunch(FbCmd):
                 index = int(argv[0])
                 value = argv[1]
             except (IndexError, ValueError): 
-                raise exception.CmdErr, "Invalid index"
+                raise exception.CmdErr("Invalid index")
 
             item = self.session.get_item(index)
             item.set_status(value)
@@ -727,7 +727,7 @@ class Fuzzbunch(FbCmd):
                 self.redirection.on()
                 self.io.print_success("Redirection ON")
             else:
-                raise exception.CmdErr, "Invalid input"
+                raise exception.CmdErr("Invalid input")
             
 
     """
@@ -772,7 +772,7 @@ class Fuzzbunch(FbCmd):
                 self.set_logdir(value)
                 self.fbglobalvars["TmpDir"] = value
             elif inputList[0].lower() == "tmpdir":
-                raise exception.CmdErr, "TmpDir is readonly and set with LogDir"
+                raise_(exception.CmdErr, "TmpDir is readonly and set with LogDir")
             elif inputList[0].lower() == "color":
                 # Supports fix for bug #2910
                 self.io.setcolormode( value.lower() == "true" )
@@ -804,7 +804,7 @@ class Fuzzbunch(FbCmd):
             try:
                 del self.fbglobalvars[argv[0]]
             except KeyError:
-                raise exception.CmdErr, "Invalid input"
+                raise exception.CmdErr("Invalid input")
             self.io.print_success("Unset %s" % argv[0])
 
     """
@@ -824,7 +824,7 @@ class Fuzzbunch(FbCmd):
             input = base64.b64encode(input)
             self.do_setg("%s %s" %(paramname, input))
         else:
-            raise exception.CmdErr, "Invalid input"
+            raise exception.CmdErr("Invalid input")
 
     def toolpaste_sha1(self, paramname):
         import hashlib
@@ -833,7 +833,7 @@ class Fuzzbunch(FbCmd):
             input = hashlib.sha1(input).hexdigest()
             self.do_setg("%s h:%s" %(paramname, input))
         else:
-            raise exception.CmdErr, "Invalid input"
+            raise exception.CmdErr("Invalid input")
 
     def toolpaste_md5(self, paramname):
         import hashlib
@@ -842,7 +842,7 @@ class Fuzzbunch(FbCmd):
             input = hashlib.md5(input).hexdigest()
             self.do_setg("%s h:%s" %(paramname, input))
         else:
-            raise exception.CmdErr, "Invalid input"
+            raise exception.CmdErr("Invalid input")
 
     def toolpaste_ep(self, paramname):
         input = self.io.get_input_lines('MultiLine > ')
@@ -867,7 +867,7 @@ class Fuzzbunch(FbCmd):
             try:
                 self.conv_tools[argv[0]](argv[1])
             except KeyError:
-                raise exception.CmdErr, "Invalid input"
+                raise exception.CmdErr("Invalid input")
 
 
     """
@@ -890,12 +890,12 @@ class Fuzzbunch(FbCmd):
                 targetvar = self.io.prompt_user("Default " + prompt, default, gvars=self.fbglobalvars)
                 targetvar = util.validateip(targetvar)
                 if not targetvar:
-                    raise exception.CmdErr, "Invalid " + prompt
-            except exception.PromptErr, err:
-                raise exception.PromptErr, err.error
-            except exception.PromptHelp, err:
+                    raise exception.CmdErr("Invalid " + prompt)
+            except exception.PromptErr as err:
+                raise_(exception.PromptErr, err.error)
+            except exception.PromptHelp as err:
                 pass
-            except exception.CmdErr, err:
+            except exception.CmdErr as err:
                 self.io.print_error(err.getErr())
             else:
                 done = True
@@ -998,7 +998,7 @@ class Fuzzbunch(FbCmd):
             while log_dir is None:
                 (project, log_dir) = self._prompt_for_logging(target, project)
 
-        except (exception.PromptErr, exception.CmdErr), err:
+        except (exception.PromptErr, exception.CmdErr) as err:
             self.io.print_error(err.getErr())
             return
 

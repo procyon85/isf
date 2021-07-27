@@ -15,8 +15,8 @@ For each SessionItem, Fuzzbunch maintains two lists of parameters:
 * Contract  - Output parameters
 """
 import uuid
-import exception
-import util
+from core import exception
+from core import util
 import os
 
 __all__ = ['Session']
@@ -94,7 +94,7 @@ class SessionInfo:
         try:
             return self.params[var]
         except KeyError:
-            raise exception.CmdErr, "%s does not exist" % var
+            raise_(exception.CmdErr, "%s does not exist" % var)
 
     def get_paramlist(self):
         """Get a list of all parameter var,vals"""
@@ -211,7 +211,7 @@ class SessionItem(object):
         if status.upper() in ("RUNNING", "FAIL", "READY", "USED"):
             self.status = status.upper()
         else:
-            raise exception.CmdErr, "%s invalid status" % status
+            raise_(exception.CmdErr, "%s invalid status" % status)
 
     def mark_running(self):
         self.set_status("RUNNING")
@@ -287,7 +287,7 @@ class Session:
         try:
             return self.items[index]
         except IndexError:
-            raise exception.CmdErr, "Bad index %d" % index
+            raise_(exception.CmdErr, "Bad index %d" % index)
 
     """
     Bulk access
@@ -312,5 +312,5 @@ class Session:
         if item.contract:
             return item.contract
         else:
-            raise exception.CmdErr, "Contract not available"
+            raise exception.CmdErr("Contract not available")
 

@@ -226,7 +226,7 @@ class Fig:
         return '\n'.join(lines)
 
     def putstring(self, i):
-        print ''.join(self.line[i]).replace(self.hdr['hardblank'], ' ')
+        print(''.join(self.line[i]).replace(self.hdr['hardblank'], ' '))
 
     def printline(self):
         for i in range(0, self.hdr['height']):
@@ -236,14 +236,14 @@ class Fig:
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print "usage: %s [phrase] [fontdir]" % sys.argv[0]
+        print("usage: %s [phrase] [fontdir]" % sys.argv[0])
         sys.exit(-1)
 
     fontdir = sys.argv[2]
     fonts = get_fontdirlist(fontdir)
     index = random.randint(0, len(fonts) - 1)
     for font in fonts:
-        print "FONT: ", font
+        print("FONT: ", font)
         f = Fig(font)
         f.addline(sys.argv[1])
         f.printline()

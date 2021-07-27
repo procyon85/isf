@@ -44,7 +44,7 @@ class log(object):
                         self.enabled = False
                         self.notify_of_error('Could not open a log output directory.  Logging will be disabled.')
                 finally:
-                    if self.verbose and self.enabled: print "Logging to " + self.log_dir
+                    if self.verbose and self.enabled: print("Logging to " + self.log_dir)
         # setup a queue of parameters to write once next log entry
         self.__queue = {}
         
@@ -219,14 +219,14 @@ class log(object):
 
     def notify_of_warning(self,warning_string=''):
         if self.enabled and self.verbose:
-            print "Warning:", warning_string
+            print("Warning:", warning_string)
             if self.debug:
                 exception_type, exception_value, exception_traceback = sys.exc_info()
                 print_exception(exception_type, exception_value, exception_traceback, limit=10, file=sys.stdout)
     
     def notify_of_error(self,error_string=''):
         if self.enabled:
-            if self.verbose: print "Error:", error_string
+            if self.verbose: print("Error:", error_string)
             if self.debug:
                 exception_type, exception_value, exception_traceback = sys.exc_info()
                 if self.verbose: print_exception(exception_type, exception_value, exception_traceback, limit=10, file=sys.stdout)
@@ -237,8 +237,8 @@ class log(object):
                             print_exception(exception_type, exception_value, exception_traceback, limit=10, file=f)
                             self(event_type='error file', file_origin_name=f.name[f.name.rfind(self.get('tool_name').lower()):], file_origin_path=os.path.dirname(f.name), file_origin_created=datetime.utcfromtimestamp(os.path.getctime(f.name)).isoformat(' '))
                     except:
-                        print 'Notice: The following is a notification of something gone awry and should not impact you operationally.'
-                        print 'Please save the following traceback and inform the developer.\nError:', error_string
+                        print('Notice: The following is a notification of something gone awry and should not impact you operationally.')
+                        print('Please save the following traceback and inform the developer.\nError:', error_string)
                         print_exception(exception_type, exception_value, exception_traceback, limit=10, file=sys.stdout)
                         exception_type, exception_value, exception_traceback = sys.exc_info()
                         print_exception(exception_type, exception_value, exception_traceback, limit=10, file=sys.stdout)

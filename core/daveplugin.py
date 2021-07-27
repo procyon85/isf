@@ -1,13 +1,13 @@
 import hashlib, os, threading
 import xml.parsers.expat as expat
 
-import exception, util, truantchild
-import edfmeta, edfexecution
+from core import exception, util, truantchild
+from core import edfmeta, edfexecution
 #from plugin import Plugin
-from edfplugin import EDFPlugin
-from pytrch import TrchError
+from core.edfplugin import EDFPlugin
+from core.pytrch import TrchError
 
-from redirection  import LocalRedirection, RemoteRedirection
+from core.redirection  import LocalRedirection, RemoteRedirection
 
 __all__ = ["DAVEPlugin"]
 
@@ -316,14 +316,14 @@ class DAVEPlugin(EDFPlugin):
             session.contract = [util.oParam("Status", "Failed", "String", "Scalar"), 
                                 util.oParam("ReturnCode", "User Abort", "String", "Scalar")]
             session.mark_fail()
-            raise exception.CmdErr, "Canceled by User"
+            raise exception.CmdErr("Canceled by User")
             
         os.chdir(cwd)
 
         try:
             # Wait for the spawned process to connect to our named pipe
             pipe = edfexecution.connect_pipe(pipe, pipeName)
-        except edfexecution.PipeError, err:
+        except edfexecution.PipeError as err:
             self.io.print_error(str(err))
             pipe = None
 
@@ -343,7 +343,7 @@ class DAVEPlugin(EDFPlugin):
             session.contract = [util.oParam("Status", "Failed", "String", "Scalar"),
                                 util.oParam("ReturnCode", str(proc.returncode), "String", "Scalar")]
             session.mark_fail()
-            raise exception.CmdErr, "Error Connecting Pipe to Plugin"
+            raise exception.CmdErr("Error Connecting Pipe to Plugin")
 
         # Create OutConfig file name
         outConfName = "%s-%s-OutConfig.xml" % (exeBaseName, timestamp)

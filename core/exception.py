@@ -73,13 +73,13 @@ def exceptionwrapped(fn):
         except:
             import traceback
             stacktrace = traceback.format_exc()
-            print >>sys.stderr, "==============================================================="
-            print >>sys.stderr, "="
-            print >>sys.stderr, "= Encountered an unhandled error.  Please provide the following"
-            print >>sys.stderr, "= information to the developer"
-            print >>sys.stderr, "= "
-            print >>sys.stderr, "==============================================================="
-            print >>sys.stderr, "%s" % (stacktrace) 
+            print("===============================================================")
+            print("=")
+            print("= Encountered an unhandled error.  Please provide the following")
+            print("= information to the developer")
+            print("= ")
+            print("===============================================================")
+            print("%s" % (stacktrace)) 
             return None
     wrap.__doc__ = fn.__doc__
     return wrap

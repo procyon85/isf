@@ -11,9 +11,9 @@ NOTE: Values pulled from XML are 'unicode' by default. The rest of FB prefers
 """
 from xml.etree import ElementTree
 import xml.dom.minidom
-import util
+from core import util
 import xml.parsers.expat as expat
-import exception
+from core import exception
 import re
 
 

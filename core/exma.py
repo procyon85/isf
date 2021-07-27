@@ -71,40 +71,40 @@ try:
 except:
 
     def getDefaultEMFile(*args):
-        print "[!] getDefaultEMFile"
-        print args
+        print("[!] getDefaultEMFile")
+        print(args)
 
     def readParamsFromEM(*args):
         with open(str(args[0])) as f:
             return str(f.read())
 
     def writeParamsToEM(*args):
-        print "[!] writeParamsToEM"
-        print args
+        print("[!] writeParamsToEM")
+        print(args)
 
 
     def bindRendezvous(*args):
-        print "[!] bindRendezvous"
-        print args
+        print("[!] bindRendezvous")
+        print(args)
 
     def sendSockets(*args):
-        print "[!] sendSockets"
+        print("[!] sendSockets")
         #print args
 
     def closeRendezvous(*args):
-        print "[!] closeRendezvous"
+        print("[!] closeRendezvous")
         #print args
 
     def connectRendezvous(*args):
-        print "[!] connectRendezvous"
+        print("[!] connectRendezvous")
         #print args
 
     def recvSocket(*args):
-        print "[!] recvSocket"
+        print("[!] recvSocket")
         #print args
 
     def disconnectRendezvous(*args):
-        print "[!] disconnectRendezvous"
+        print("[!] disconnectRendezvous")
         #print args
 
     def writeParamsToEM(*args):

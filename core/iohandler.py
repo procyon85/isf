@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 
 import sys
-import exception
-from util import variable_replace
+from core import exception
+from core.util import variable_replace
 
 MAX_OUTPUT_ROWS = 5
 MAX_PROMPT_ECHO_LEN = 50
@@ -171,7 +171,7 @@ class IOhandler:
     def get_input(self, prompt):
         if self.raw_input:
             try:
-                line = raw_input(prompt)
+                line = input(prompt)
             except (EOFError, KeyboardInterrupt):
                 line = 'EOF'
         else:
@@ -206,10 +206,10 @@ class IOhandler:
             self.newline()
 
         if line.upper() in ("EOF", "Q", "QUIT"):
-            raise exception.PromptErr, "Aborted by user"
+            raise exception.PromptErr("Aborted by user")
 
         if line.upper() in ("?", "HELP"):
-            raise exception.PromptHelp, "No help available"
+            raise exception.PromptHelp("No help available")
 
         # Retrieve the line, and replace any '$' vars with their values
         line = variable_replace(line, gvars)
@@ -223,7 +223,7 @@ class IOhandler:
                 index = int(line)
                 line = params[index][0]
             except (IndexError, ValueError):
-                raise exception.CmdErr, "Invalid input"
+                raise exception.CmdErr("Invalid input")
 
         return line
 
@@ -238,7 +238,7 @@ class IOhandler:
     def prompt_continue(self):
         line = self.prompt_user("Execute Plugin?", "Yes")
         if line.lower() not in ("yes", "y"):
-            raise exception.CmdErr, "Execution Aborted"
+            raise exception.CmdErr("Execution Aborted")
         return
 
     def prompt_confirm_redir(self):

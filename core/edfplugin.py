@@ -2,26 +2,26 @@ import hashlib
 import os
 import threading
 
-import edfexecution
-import exception
-from plugin       import Plugin
-from redirection  import LocalRedirection, RemoteRedirection
-import util
+from core import edfexecution
+from core import exception
+from core.plugin  import plugin
+from core.redirection  import LocalRedirection, RemoteRedirection
+from core import util
 
-import truantchild
-from pytrch import TrchError
+from core import truantchild
+from core.pytrch import TrchError
 
-import edfmeta
+from core import edfmeta
 import xml.parsers.expat as expat
 
 
 __all__ = ["EDFPlugin"]
 
 
-class EDFPlugin(Plugin):
+class EDFPlugin(plugin):
     def __init__(self, files, io):
         try:
-            Plugin.__init__(self, files, io)
+            plugin.__init__(self, files, io)
             self.metaconfig = files[2]
             self.initTouches()
             self.initRedirection()
@@ -149,14 +149,14 @@ class EDFPlugin(Plugin):
             session.contract = [util.oParam("Status", "Failed", "String", "Scalar"), 
                                 util.oParam("ReturnCode", "User Abort", "String", "Scalar")]
             session.mark_fail()
-            raise exception.CmdErr, "Canceled by User"
+            raise exception.CmdErr("Canceled by User")
             
         os.chdir(cwd)
 
         try:
             # Wait for the spawned process to connect to our named pipe
             pipe = edfexecution.connect_pipe(pipe, pipeName)
-        except edfexecution.PipeError, err:
+        except edfexecution.PipeError as err:
             self.io.print_error(str(err))
             pipe = None
 
@@ -176,7 +176,7 @@ class EDFPlugin(Plugin):
             session.contract = [util.oParam("Status", "Failed", "String", "Scalar"),
                                 util.oParam("ReturnCode", str(proc.returncode), "String", "Scalar")]
             session.mark_fail()
-            raise exception.CmdErr, "Error Connecting Pipe to Plugin"
+            raise exception.CmdErr("Error Connecting Pipe to Plugin")
 
         # Create OutConfig file name
         outConfName = "%s-%s-OutConfig.xml" % (exeBaseName, timestamp)
@@ -354,8 +354,8 @@ class EDFPlugin(Plugin):
                 self.io.pre_input(None)
                 self.io.print_warning("Error in %s meta (.fb) file - touches not loaded " % (str(n)))
                 self.io.post_input()
-                Plugin.initTouches(self)
+                plugin.initTouches(self)
             except IndexError:
-                Plugin.initTouches(self)
+                plugin.initTouches(self)
         else:
-            Plugin.initTouches(self)
+            plugin.initTouches(self)

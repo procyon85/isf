@@ -2,12 +2,12 @@
     EDF Plugin Manager
 
 """
-from command   import CmdCtx
-from iohandler import truncate
-import exception
-import util
+from core.command   import CmdCtx
+from core.iohandler import truncate
+from core import exception
+from core import util
 import traceback
-from pluginmanager import PluginManager
+from core.pluginmanager import PluginManager
 
 MAX_PARAM_ECHO_LEN = 60
 
@@ -145,8 +145,8 @@ class DeployableManager(PluginManager):
                         self.io.print_warning("Connection to Target Established")
                         self.io.print_warning("Waiting For Next Stage")
                 else:
-                    raise exception.CmdErr, "%s Failed" % plugin.name
+                    raise_(exception.CmdErr, "%s Failed" % plugin.name)
         else:
             #self.do_validate()
-            raise exception.CmdErr, "Execution Aborted"
+            raise exception.CmdErr("Execution Aborted")
         self.io.newline()

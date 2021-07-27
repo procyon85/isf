@@ -81,7 +81,7 @@ if mswindows:
                                     stderr=io.stdout,
                                     stdin=io.stdin,
                                     env=os.environ)
-        except OSError, e:
+        except OSError as e:
             io.print_error("Failed to execute: %s" % str(e))
             retcode = 1
 
@@ -147,7 +147,7 @@ if mswindows:
             win32file.CancelIo(pipe)
             pipe.close()
             raise
-        except BaseException, err:
+        except BaseException as err:
             win32file.CancelIo(pipe)
             pipe.close()
             pipe = None
@@ -182,7 +182,7 @@ else:
         return
 
     def create_pipe(pipename):
-        os.mkfifo(pipename, 0666)
+        os.mkfifo(pipename, 0o666)
         return None
 
     def launch_plugin(binName, inName, pipeName, logFile, io, newconsole):
@@ -228,7 +228,7 @@ else:
                                     stdin=io.stdin,
                                     shell=True,
                                     env=os.environ)
-        except OSError, e:
+        except OSError as e:
             io.print_error("Failed to execute: %s" % str(e))
             retcode = 1
         return retcode

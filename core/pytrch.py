@@ -1,9 +1,9 @@
 from ctypes import *
 from xml.etree import ElementTree
 import xml.dom.minidom
-import util
+from core import util
 import xml.parsers.expat as expat
-import exception
+from core import exception
 import re
 import binascii
 import sys,os
@@ -187,7 +187,7 @@ def Config_getConstants(*args):
 
 def Config_getID(*args):
   s = args[0].getAttribute('id')
-  return s.decode('utf-8')
+  return s
 
 def Config_getInputParams(*args):
   try:
@@ -197,11 +197,11 @@ def Config_getInputParams(*args):
 
 def Config_getName(*args):
   s = args[0].getAttribute('name')
-  return s.decode('utf-8')
+  return s
 
 def Config_getNamespaceUri(*args):
   s = args[0].getAttribute('id')
-  return s.decode('utf-8')
+  return s
 
 def Config_getOutputParams(*args):
   try:
@@ -520,7 +520,7 @@ def Parameter_hasValidValue(*args):
     if not os.path.isfile(v):
       return False
   else:
-    print "++++++++++++++++++++++++++ Invalid Type ++++++++++++++++++++++++++ ->",t
+    print("++++++++++++++++++++++++++ Invalid Type ++++++++++++++++++++++++++ ->",t)
 
   return True
 

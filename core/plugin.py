@@ -5,13 +5,13 @@ Wraps the truantchild Config class to provide easy access to setting and
 getting parameters.
 
 """
-import truantchild
-import exception
-import util
-import edfmeta
+from core import truantchild
+from core import exception
+from core import util
+from core import edfmeta
 
 
-__all__ = ["Plugin"]
+__all__ = ["plugin"]
 
 
 """
@@ -23,9 +23,9 @@ def setwrapper(f):
         try:
             return f(*args, **kwargs)
         except AttributeError:
-            raise exception.CmdErr, "Unknown parameter"
+            raise exception.CmdErr("Unknown parameter")
         except (ValueError, TypeError, OverflowError):
-            raise exception.CmdErr, "Invalid value"
+            raise exception.CmdErr("Invalid value")
         except (IOError, RuntimeError, ZeroDivisionError,
                 IndexError, SyntaxError, MemoryError) as err:
             raise exception.CmdErr("TRCH internal : " + str(err))
@@ -37,7 +37,7 @@ def resetwrapper(f):
         try:
             return f(*args, **kwargs)
         except AttributeError:
-            raise exception.CmdErr, "Unknown parameter"
+            raise exception.CmdErr("Unknown parameter")
         except (IOError, RuntimeError, ZeroDivisionError,
                 IndexError, SyntaxError, MemoryError) as err:
             raise exception.CmdErr("TRCH internal : " + str(err))
@@ -48,7 +48,7 @@ def getwrapper(f):
         try:
             return f(*args, **kwargs)
         except AttributeError:
-            raise exception.CmdErr, "Unknown parameter"
+            raise exception.CmdErr("Unknown parameter")
     return wrap
 
 def safesetparameter(f):
@@ -58,7 +58,7 @@ def safesetparameter(f):
         f(self, name, value)
         if not self.hasValidValue(name):
             self._trch_set(name, old)
-            raise exception.CmdErr, "Invalid value for '%s' (%s)" % (name, value)
+            raise_(exception.CmdErr, "Invalid value for '%s' (%s)" % (name, value))
     return wrap
 
 def safesetchoice(f):
@@ -71,7 +71,7 @@ def safesetchoice(f):
         if not self.hasValidValue(name):
             # Restore to the old
             self._trch_set(name, old)
-            raise exception.CmdErr, "Invalid value for %s (%s)" % (name, value)
+            raise_(exception.CmdErr, "Invalid value for %s (%s)" % (name, value))
         # We want var matches, not var/val 
         for param in paramcache:
             if param.name in util.iDict(self.cache_choiceparams(name)):
@@ -87,7 +87,7 @@ def safesetchoice(f):
 Plugin base class
 
 """
-class Plugin(truantchild.Config):
+class plugin(truantchild.Config):
     def __init__(self, files, io):
         import truantchild
         from pytrch import TrchError as TruantchildError
@@ -375,7 +375,7 @@ class Plugin(truantchild.Config):
         try:
             return self.getTouchList()[index]
         except IndexError:
-            raise exception.CmdErr, "Bad touch"
+            raise exception.CmdErr("Bad touch")
 
     """
     Truantchild abstractions

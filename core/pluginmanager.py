@@ -2,10 +2,10 @@
     EDF Plugin Manager
 
 """
-from command   import CmdCtx
-from iohandler import truncate
-import exception
-import util
+from core.command   import CmdCtx
+from core.iohandler import truncate
+from core import exception
+from core import util
 import traceback
 
 MAX_PARAM_ECHO_LEN = 60
@@ -46,7 +46,7 @@ class PluginManager(CmdCtx):
 
     """
     def add_plugin(self, files, Constructor):
-        from pytrch import TrchError as TruantchildError
+        from core.pytrch import TrchError as TruantchildError
         try:
             item = Constructor(files, self.io)
             try:
@@ -55,7 +55,7 @@ class PluginManager(CmdCtx):
                 # We're in MinSizeRel
                 name = files[0].split('-')[0]
                 self.pluginList[name] = item
-        except TruantchildError, e:
+        except TruantchildError as e:
             # If we fail to process something, don't load this plugin, but also don't fail
             # to load the other plugins
             raise exception.PluginXmlErr(str(e))
@@ -64,7 +64,7 @@ class PluginManager(CmdCtx):
         try:
             return self.pluginList[name]
         except KeyError:
-            raise exception.CmdErr, "'%s' not a valid %s" % (name, self.get_type())
+            raise_(exception.CmdErr, "'%s' not a valid %s" % (name, self.get_type()))
 
     def get_plugins(self):
         for plugin in self.pluginList.values():
@@ -253,10 +253,10 @@ class PluginManager(CmdCtx):
                         self.io.print_warning("Connection to Target Established")
                         self.io.print_warning("Waiting For Next Stage")
                 else:
-                    raise exception.CmdErr, "%s Failed" % plugin.name
+                    raise_(exception.CmdErr, "%s Failed" % plugin.name)
         else:
             #self.do_validate()
-            raise exception.CmdErr, "Execution Aborted"
+            raise exception.CmdErr("Execution Aborted")
         self.io.newline()
 
 
@@ -323,7 +323,7 @@ class PluginManager(CmdCtx):
             try:
                 index = int(line)
             except ValueError:
-                raise exception.CmdErr, "Invalid Input"
+                raise exception.CmdErr("Invalid Input")
 
             if index == len(vals):
                 # picked current
@@ -333,7 +333,7 @@ class PluginManager(CmdCtx):
                 try:
                     (param, contract) = vals[int(line)]
                 except (IndexError, ValueError):
-                    raise exception.CmdErr, "Invalid Input"
+                    raise exception.CmdErr("Invalid Input")
 
         if var.lower() == "rendezvous":
             sval = param.value.value
@@ -350,7 +350,7 @@ class PluginManager(CmdCtx):
                 # list => scalar
                 vals = util.parse_param_list(param.value.value, param.value.type)
                 if not vals:
-                    raise exception.CmdErr, "Invalid Input"
+                    raise exception.CmdErr("Invalid Input")
 
                 params = {'default'  : "",
                           'contract' : contract.get_item_info(),
@@ -364,7 +364,7 @@ class PluginManager(CmdCtx):
                 try:
                     index = int(line)
                 except IndexError:
-                    raise exception.CmdErr, "Invalid Input"
+                    raise exception.CmdErr("Invalid Input")
 
                 if index == len(vals):
                     #picked current
@@ -374,7 +374,7 @@ class PluginManager(CmdCtx):
                     try:
                         sval = vals[index]
                     except (IndexError, ValueError):
-                        raise exception.CmdErr, "Invalid Input"
+                        raise exception.CmdErr("Invalid Input")
 
             plugin.set(var, sval, globalvars=self.fb.fbglobalvars)
 
@@ -389,11 +389,11 @@ class PluginManager(CmdCtx):
         while not done:
             try:
                 if var not in params:
-                    raise exception.CmdErr, "Unknown var"
+                    raise exception.CmdErr("Unknown var")
                 done = self.apply_prompt(var, params[var], plugin, singlemode)
-            except exception.PromptErr, err:
+            except exception.PromptErr as err:
                 raise 
-            except exception.CmdErr, err:
+            except exception.CmdErr as err:
                 self.io.print_error(err.getErr())
                 # With errors, continue on, skipping param
                 self.io.print_error("Skipping '%s'" % var)
@@ -429,7 +429,7 @@ class PluginManager(CmdCtx):
             try:
                 index = int(inputList[0])
             except ValueError:
-                raise exception.CmdErr, "apply [index]"
+                raise exception.CmdErr("apply [index]")
 
             contract = self.fb.session.get_contract(index)
             for param in contract.get_paramlist():
@@ -518,11 +518,11 @@ class PluginManager(CmdCtx):
             while not done:
                 try:
                     done = self.prompt_param(name, value, plugin)
-                except exception.PromptHelp, err:
+                except exception.PromptHelp as err:
                     self.prompt_param_help(name, value, plugin)
-                except exception.PromptErr, err:
+                except exception.PromptErr as err:
                     raise
-                except exception.CmdErr, err:
+                except exception.CmdErr as err:
                     self.io.print_error(err.getErr())
         self.io.newline()
         if self.fb.log: self.fb.log.command('prompt', '%s %s configured with manually entered parameters'%(plugin.getName(),plugin.getConfigVersion()))
@@ -588,7 +588,7 @@ class PluginManager(CmdCtx):
                     attribVal = param.getAttributeValueList()
                     self.io.print_set_choices(attribVal)
             except AttributeError:
-                raise exception.CmdErr, "set [param] [value]"
+                raise exception.CmdErr("set [param] [value]")
         elif len(input) >= 2:
             set_value = " ".join(inputList[1:])
             plugin.set(inputList[0], set_value, globalvars=self.fb.fbglobalvars)
@@ -623,7 +623,7 @@ class PluginManager(CmdCtx):
             plugin.reset(inputList[0])
             self.io.print_success("Reset %s" % inputList[0])
         else:
-            raise exception.CmdErr, "Invalid input"
+            raise exception.CmdErr("Invalid input")
 
     """
     Parameter exporting to globals
@@ -662,7 +662,7 @@ class PluginManager(CmdCtx):
                     attribVal = param.getAttributeValueList()
                     self.io.print_set_choices(attribVal)
             except AttributeError:
-                raise exception.CmdErr, "export [param] [globalname]"
+                raise exception.CmdErr("export [param] [globalname]")
         elif len(input) >= 2:
             value = plugin.get(inputList[0])
             self.fb.do_setg("%s %s" % (inputList[1], value))
@@ -738,7 +738,7 @@ class PluginManager(CmdCtx):
                 try:
                     index = int(argv[0])
                 except (IndexError, ValueError):
-                    raise exception.CmdErr, "Bad touch"
+                    raise exception.CmdErr("Bad touch")
 
             plugin = self.get_active_plugin()
             try:

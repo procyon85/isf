@@ -1,7 +1,7 @@
-import pluginmanager
+from core import pluginmanager
 import sys
 import os
-import exception
+from core import exception
 
 mswindows = (sys.platform == "win32")
 if mswindows:

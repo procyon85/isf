@@ -16,14 +16,14 @@ SUPPORTED_ARCH = {
     'darwin':           ''
 }
 
-try:
-    platform = sys.platform
-    if sys.platform == 'linux2':
-        platform = sys.platform + "-" + os.uname()[4]
-    arch = SUPPORTED_ARCH[platform]
-except KeyError:
-    print "You are running on an unsuported architecture!"
-    sys.exit(-1)
+#try:
+#   platform = sys.platform
+#  if sys.platform == 'linux2':
+#     platform = sys.platform + "-" + os.uname()[4]
+#arch = SUPPORTED_ARCH[platform]
+#except KeyError:
+#   print "You are running on an unsuported architecture!"
+#  sys.exit(-1)
 
 """
 Set up core paths
@@ -35,7 +35,8 @@ def setup_core_paths( fbdir ):
     global EDFLIB_DIR
     FB_FILE = os.path.realpath(fbdir)
     FB_DIR  = os.path.dirname(FB_FILE)
-    EDFLIB_DIR = os.path.join(FB_DIR, "lib", arch)
+    #EDFLIB_DIR = os.path.join(FB_DIR, "lib", arch)      remove arch
+    EDFLIB_DIR = os.path.join(FB_DIR, "lib")
     os.environ['PATH'] = EDFLIB_DIR + os.pathsep + os.environ['PATH']   # The EDF libs should always come FIRST in the system PATH...
     os.environ['FBDIR'] = FB_DIR
     sys.path.append(os.path.join(FB_DIR, 'core'))
